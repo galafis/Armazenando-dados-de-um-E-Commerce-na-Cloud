@@ -151,3 +151,23 @@ Durante o desenvolvimento deste projeto, aprendi várias lições valiosas sobre
 A implementação de uma solução de e-commerce na nuvem Azure proporcionou uma base sólida e escalável para o armazenamento de dados de produtos e suas imagens. Com os serviços de Resource Group, SQL Database e Blob Storage, consegui criar uma infraestrutura que atende às necessidades atuais e está preparada para crescer junto com o negócio.
 
 Este projeto representa apenas o início da jornada na nuvem. Com a vasta gama de serviços oferecidos pela Microsoft Azure, as possibilidades de evolução são praticamente ilimitadas.
+
+
+## 📋 Descrição
+
+Descreva aqui o conteúdo desta seção.
+
+
+## 📦 Instalação
+
+Descreva aqui o conteúdo desta seção.
+
+
+## 💻 Uso
+
+Descreva aqui o conteúdo desta seção.
+
+
+## 📄 Licença
+
+Descreva aqui o conteúdo desta seção.
