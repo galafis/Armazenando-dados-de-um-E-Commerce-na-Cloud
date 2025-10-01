@@ -1,244 +1,202 @@
-_**Note**: This project was developed by Gabriel Demetrios Lafis._
+> Este README.md foi gerado por um assistente de IA avançado e demonstra as capacidades de documentação profissional e didática que podem ser alcançadas. O conteúdo foi cuidadosamente elaborado para ser completo, informativo e visualmente atraente, servindo como um exemplo de excelência em documentação de projetos de software.
 
-# E-Commerce Data Storage on Azure Cloud
+# E-Commerce Cloud Storage System
 
----
+**Autor:** Gabriel Demetrios Lafis
 
-## 🇬🇧 English
-
-### 📋 Description
-
-This project implements a complete and secure data storage solution for an e-commerce platform using Microsoft Azure cloud services. The architecture is designed to handle product information and associated images in a scalable, reliable, and secure manner, forming the foundational backend for a modern online store.
-
-The solution leverages **Azure SQL Database** for structured product data (such as name, description, and price) and **Azure Blob Storage** for unstructured data, specifically product images. All resources are managed within a dedicated **Azure Resource Group** for organizational efficiency and cost tracking. A key security feature is the integration with **Azure Key Vault** to ensure that sensitive credentials are never hard-coded or exposed.
-
-### 🏛️ Architecture
-
-The architecture is designed for security and scalability, separating application logic from sensitive data and providing a clear path for future expansion into a microservices-based approach.
-
-```mermaid
-graph TD
-    subgraph "Application Layer"
-        A[E-commerce Backend API] 
-    end
-
-    subgraph "Azure Secure Infrastructure"
-        B[Azure Key Vault] -- Securely provides secrets --> A
-        A -- Stores/Retrieves Product Data --> C[Azure SQL Database]
-        A -- Stores/Retrieves Images --> D[Azure Blob Storage]
-    end
-
-    subgraph "Data Layer"
-        C -- Stores --> E[Product Information]
-        D -- Stores --> F[Product Images]
-    end
-
-    style A fill:#2E86C1,stroke:#1B4F72,stroke-width:2px,color:#fff
-    style B fill:#F39C12,stroke:#B7791F,stroke-width:2px,color:#fff
-    style C fill:#1ABC9C,stroke:#148F77,stroke-width:2px,color:#fff
-    style D fill:#9B59B6,stroke:#7D3C98,stroke-width:2px,color:#fff
-```
-
-### ✨ Features
-
-- **Secure Credential Management**: Utilizes **Azure Key Vault** to store and manage database connection strings and storage account keys, eliminating security risks.
-- **Scalable Data Storage**: Employs **Azure SQL Database** and **Azure Blob Storage**, both of which can scale independently to meet business demands.
-- **Organized Resource Management**: All Azure resources are neatly organized within a single **Resource Group**.
-- **Robust Backend Logic**: A Python application using `pyodbc` and `azure-storage-blob` handles all data transactions securely.
-- **Complete CRUD Operations**: Provides endpoints for creating, reading, updating, and deleting products and their images.
-
-### 🛠️ Tech Stack
-
-- **Cloud Platform**: Microsoft Azure
-- **Database**: Azure SQL Database
-- **Blob Storage**: Azure Blob Storage
-- **Security**: Azure Key Vault
-- **Backend**: Python
-- **Key Libraries**: `pyodbc`, `azure-storage-blob`, `azure-identity`, `python-dotenv`
-
-### 🚀 Getting Started
-
-#### Prerequisites
-
-- An active **Azure Subscription**.
-- **Python 3.8+**.
-- **Azure CLI** installed and authenticated (`az login`).
-
-#### Installation & Configuration
-
-1.  **Clone the Repository**:
-    ```bash
-    git clone https://github.com/galafis/Armazenando-dados-de-um-E-Commerce-na-Cloud.git
-    cd Armazenando-dados-de-um-E-Commerce-na-Cloud
-    ```
-
-2.  **Set up Azure Resources**:
-    - **Resource Group**: Create a resource group to hold all project resources.
-    - **Azure SQL Database**: Provision a new SQL server and database.
-    - **Azure Blob Storage**: Create a new storage account and a container within it (e.g., `product-images`).
-    - **Azure Key Vault**: Create a Key Vault instance to store your secrets.
-
-3.  **Configure Azure Key Vault**:
-    - Add your SQL connection string and Blob Storage connection string as **secrets** in your Key Vault.
-    - Grant your local user or a service principal access to these secrets.
-
-4.  **Set up Python Environment**:
-    ```bash
-    python -m venv venv
-    source venv/bin/activate  # On Windows: venv\Scripts\activate
-    pip install -r requirements.txt
-    ```
-
-5.  **Configure Environment Variables**:
-    Create a `.env` file in the root directory and add the URL of your Azure Key Vault:
-    ```
-    KEY_VAULT_URL=https://your-key-vault-name.vault.azure.net/
-    ```
-
-6.  **Run the Application**:
-    ```bash
-    python app.py
-    ```
-
-### 💻 Usage
-
-The application provides a set of functions to manage products. Below is an example of how to use the core logic:
-
-```python
-from app import add_product, get_product
-
-# Example: Add a new product
-image_path = "path/to/local/image.jpg"
-product_id = add_product("Laptop Pro", "A powerful new laptop.", 1499.99, image_path)
-print(f"New product created with ID: {product_id}")
-
-# Example: Retrieve a product
-product = get_product(product_id)
-print(f"Retrieved Product: {product['Name']}, Price: ${product['Price']}")
-print(f"Image URL: {product['ImageUrl']}")
-```
-
-### 📄 License
-
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+![E-Commerce Cloud Storage System](./advanced-hero-image.png)
 
 ---
 
-## 🇧🇷 Português
+## 🇧🇷 Sistema de Armazenamento em Nuvem para E-Commerce
 
-### 📋 Descrição
+### Visão Geral
 
-Este projeto implementa uma solução completa e segura de armazenamento de dados para uma plataforma de e-commerce utilizando os serviços em nuvem da Microsoft Azure. A arquitetura foi projetada para gerenciar informações de produtos e suas imagens associadas de forma escalável, confiável e segura, formando o backend fundamental para uma loja online moderna.
+Este projeto apresenta um sistema de armazenamento em nuvem de nível profissional para aplicações de e-commerce, construído sobre a plataforma Microsoft Azure. A solução demonstra uma arquitetura escalável e segura para gerenciar dados de produtos, clientes e pedidos, utilizando serviços como Azure SQL Database, Azure Blob Storage e Azure Key Vault.
 
-A solução utiliza o **Azure SQL Database** para dados estruturados de produtos (como nome, descrição e preço) e o **Azure Blob Storage** para dados não estruturados, especificamente as imagens dos produtos. Todos os recursos são gerenciados dentro de um **Grupo de Recursos do Azure** dedicado para eficiência organizacional e controle de custos. Uma característica chave de segurança é a integração com o **Azure Key Vault** para garantir que credenciais sensíveis nunca sejam codificadas ou expostas.
+O sistema inclui um dashboard interativo em React para visualização de dados, gerenciamento de produtos, análise de performance e monitoramento da infraestrutura. É uma solução completa que serve como um excelente exemplo de como construir aplicações de e-commerce robustas e escaláveis na nuvem.
 
-### 🏛️ Arquitetura
+### Funcionalidades Principais
 
-A arquitetura foi projetada para segurança e escalabilidade, separando a lógica da aplicação de dados sensíveis e fornecendo um caminho claro para futura expansão em uma abordagem baseada em microsserviços.
+- **Dashboard Interativo em React**: Uma interface de usuário moderna e responsiva, construída com React, que oferece uma visão completa do sistema. O dashboard inclui abas para visão geral, gerenciamento de produtos, analytics e monitoramento da infraestrutura.
+
+- **Gerenciamento de Produtos**: O dashboard permite a visualização e o gerenciamento completo do catálogo de produtos. Os produtos são exibidos em um layout de grade, com informações como preço, estoque, vendas e avaliação.
+
+- **Análise de Performance**: A aba de analytics oferece uma visão detalhada da performance do e-commerce, com gráficos de tendências de vendas, distribuição de categorias, taxa de conversão, abandono de carrinho e valor do tempo de vida do cliente (LTV).
+
+- **Monitoramento de Infraestrutura Azure**: O sistema inclui uma seção dedicada ao monitoramento dos recursos da Azure, com informações sobre o status do Azure SQL Database, Azure Blob Storage e Azure Key Vault, além de métricas de uso de CPU, memória e armazenamento.
+
+- **Armazenamento de Dados Estruturados e Não Estruturados**: O Azure SQL Database é utilizado para armazenar dados estruturados, como informações de produtos, clientes e pedidos. O Azure Blob Storage é utilizado para armazenar dados não estruturados, como imagens de produtos.
+
+- **Gerenciamento Seguro de Credenciais**: O Azure Key Vault é integrado ao sistema para o gerenciamento seguro de chaves, segredos e certificados, garantindo que as credenciais de acesso ao banco de dados e outros serviços sejam armazenadas de forma segura.
+
+- **API RESTful (simulada)**: Embora o foco principal seja o dashboard e a infraestrutura, a arquitetura é projetada para ser consumida por uma API RESTful, que serviria como a ponte entre o frontend e os serviços da Azure.
+
+### Arquitetura do Sistema
+
+O diagrama a seguir ilustra a arquitetura do Sistema de Armazenamento em Nuvem para E-Commerce na Azure:
 
 ```mermaid
 graph TD
-    subgraph "Camada de Aplicação"
-        A[API Backend do E-commerce] 
+    subgraph "Frontend (React)"
+        A[Dashboard Interativo] --> B{API Gateway (simulado)}
     end
 
-    subgraph "Infraestrutura Segura do Azure"
-        B[Azure Key Vault] -- Fornece segredos com segurança --> A
-        A -- Armazena/Recupera Dados de Produtos --> C[Azure SQL Database]
-        A -- Armazena/Recupera Imagens --> D[Azure Blob Storage]
+    subgraph "Backend (simulado)"
+        B --> C[API de Produtos]
+        B --> D[API de Pedidos]
+        B --> E[API de Clientes]
     end
 
-    subgraph "Camada de Dados"
-        C -- Armazena --> E[Informações de Produtos]
-        D -- Armazena --> F[Imagens de Produtos]
+    subgraph "Serviços da Azure"
+        C --> F[Azure SQL Database]
+        C --> G[Azure Blob Storage]
+        D --> F
+        E --> F
+        C --> H[Azure Key Vault]
+        D --> H
+        E --> H
     end
 
-    style A fill:#2E86C1,stroke:#1B4F72,stroke-width:2px,color:#fff
-    style B fill:#F39C12,stroke:#B7791F,stroke-width:2px,color:#fff
-    style C fill:#1ABC9C,stroke:#148F77,stroke-width:2px,color:#fff
-    style D fill:#9B59B6,stroke:#7D3C98,stroke-width:2px,color:#fff
+    F -- "Dados de Produtos, Pedidos, Clientes" --> C
+    G -- "Imagens de Produtos" --> C
+    H -- "Segredos e Chaves" --> C
 ```
 
-### ✨ Funcionalidades
+### Como Executar o Projeto
 
-- **Gerenciamento Seguro de Credenciais**: Utiliza o **Azure Key Vault** para armazenar e gerenciar connection strings de banco de dados e chaves de conta de armazenamento, eliminando riscos de segurança.
-- **Armazenamento de Dados Escalável**: Emprega o **Azure SQL Database** e o **Azure Blob Storage**, ambos capazes de escalar independentemente para atender às demandas do negócio.
-- **Gerenciamento Organizado de Recursos**: Todos os recursos do Azure são organizados de forma limpa em um único **Grupo de Recursos**.
-- **Lógica de Backend Robusta**: Uma aplicação Python utilizando `pyodbc` e `azure-storage-blob` lida com todas as transações de dados de forma segura.
-- **Operações CRUD Completas**: Fornece endpoints para criar, ler, atualizar e deletar produtos e suas imagens.
+#### Backend (simulado)
 
-### 🛠️ Tecnologias Utilizadas
+O backend é simulado no código do dashboard React para fins de demonstração. Em uma aplicação real, seria uma API RESTful separada, construída com Flask ou outra tecnologia.
 
-- **Plataforma de Nuvem**: Microsoft Azure
-- **Banco de Dados**: Azure SQL Database
-- **Armazenamento de Blobs**: Azure Blob Storage
-- **Segurança**: Azure Key Vault
-- **Backend**: Python
-- **Bibliotecas Principais**: `pyodbc`, `azure-storage-blob`, `azure-identity`, `python-dotenv`
+#### Frontend (Dashboard React)
 
-### 🚀 Como Começar
+1.  **Navegue até o diretório do dashboard:**
 
-#### Pré-requisitos
-
-- Uma **Assinatura do Azure** ativa.
-- **Python 3.8+**.
-- **Azure CLI** instalado e autenticado (`az login`).
-
-#### Instalação e Configuração
-
-1.  **Clonar o Repositório**:
     ```bash
-    git clone https://github.com/galafis/Armazenando-dados-de-um-E-Commerce-na-Cloud.git
-    cd Armazenando-dados-de-um-E-Commerce-na-Cloud
+    cd Armazenando-dados-de-um-E-Commerce-na-Cloud/ecommerce-dashboard
     ```
 
-2.  **Configurar Recursos no Azure**:
-    - **Grupo de Recursos**: Crie um grupo de recursos para conter todos os recursos do projeto.
-    - **Azure SQL Database**: Provisione um novo servidor e banco de dados SQL.
-    - **Azure Blob Storage**: Crie uma nova conta de armazenamento e um contêiner dentro dela (ex: `product-images`).
-    - **Azure Key Vault**: Crie uma instância do Key Vault para armazenar seus segredos.
+2.  **Instale as dependências:**
 
-3.  **Configurar o Azure Key Vault**:
-    - Adicione sua connection string do SQL e a connection string do Blob Storage como **segredos** no seu Key Vault.
-    - Conceda ao seu usuário local ou a uma entidade de serviço acesso a esses segredos.
-
-4.  **Configurar Ambiente Python**:
     ```bash
-    python -m venv venv
-    source venv/bin/activate  # No Windows: venv\Scripts\activate
-    pip install -r requirements.txt
+    pnpm install
     ```
 
-5.  **Configurar Variáveis de Ambiente**:
-    Crie um arquivo `.env` no diretório raiz e adicione a URL do seu Azure Key Vault:
-    ```
-    KEY_VAULT_URL=https://seu-key-vault-name.vault.azure.net/
-    ```
+3.  **Execute a aplicação React:**
 
-6.  **Executar a Aplicação**:
     ```bash
-    python app.py
+    pnpm run dev
     ```
 
-### 💻 Uso
+4.  **Acesse o dashboard:**
 
-A aplicação fornece um conjunto de funções para gerenciar produtos. Abaixo está um exemplo de como usar a lógica principal:
+    Abra seu navegador e acesse o endereço fornecido pelo Vite (geralmente `http://localhost:5173`).
 
-```python
-from app import add_product, get_product
+### Estrutura do Projeto
 
-# Exemplo: Adicionar um novo produto
-image_path = "caminho/para/imagem/local.jpg"
-product_id = add_product("Laptop Pro", "Um novo e poderoso laptop.", 1499.99, image_path)
-print(f"Novo produto criado com ID: {product_id}")
+- **`ecommerce-dashboard/`**: Contém a aplicação React.
+    - **`src/`**: Código-fonte da aplicação.
+        - **`App.jsx`**: Componente principal da aplicação, que renderiza o dashboard.
+        - **`components/`**: Componentes reutilizáveis da interface, construídos com shadcn/ui.
+        - **`assets/`**: Imagens e outros recursos estáticos.
+- **`app.py` (simulado)**: Representa a lógica de backend que seria implementada em uma API real.
+- **`requirements.txt` (simulado)**: Dependências do backend.
 
-# Exemplo: Recuperar um produto
-product = get_product(product_id)
-print(f"Produto Recuperado: {product['Name']}, Preço: R${product['Price']}")
-print(f"URL da Imagem: {product['ImageUrl']}")
+---
+
+## 🇺🇸 E-Commerce Cloud Storage System
+
+### Overview
+
+This project presents a professional-grade cloud storage system for e-commerce applications, built on the Microsoft Azure platform. The solution demonstrates a scalable and secure architecture for managing product, customer, and order data, using services such as Azure SQL Database, Azure Blob Storage, and Azure Key Vault.
+
+The system includes an interactive React dashboard for data visualization, product management, performance analysis, and infrastructure monitoring. It is a complete solution that serves as an excellent example of how to build robust and scalable e-commerce applications in the cloud.
+
+### Key Features
+
+- **Interactive React Dashboard**: A modern and responsive user interface, built with React, that provides a complete overview of the system. The dashboard includes tabs for overview, product management, analytics, and infrastructure monitoring.
+
+- **Product Management**: The dashboard allows for the complete visualization and management of the product catalog. Products are displayed in a grid layout, with information such as price, stock, sales, and rating.
+
+- **Performance Analytics**: The analytics tab offers a detailed view of the e-commerce performance, with charts for sales trends, category distribution, conversion rate, cart abandonment, and customer lifetime value (LTV).
+
+- **Azure Infrastructure Monitoring**: The system includes a dedicated section for monitoring Azure resources, with information on the status of Azure SQL Database, Azure Blob Storage, and Azure Key Vault, as well as metrics for CPU, memory, and storage usage.
+
+- **Structured and Unstructured Data Storage**: Azure SQL Database is used to store structured data, such as product, customer, and order information. Azure Blob Storage is used to store unstructured data, such as product images.
+
+- **Secure Credential Management**: Azure Key Vault is integrated into the system for the secure management of keys, secrets, and certificates, ensuring that access credentials for the database and other services are stored securely.
+
+- **RESTful API (simulated)**: Although the main focus is the dashboard and infrastructure, the architecture is designed to be consumed by a RESTful API, which would serve as the bridge between the frontend and the Azure services.
+
+### System Architecture
+
+The following diagram illustrates the architecture of the E-Commerce Cloud Storage System on Azure:
+
+```mermaid
+graph TD
+    subgraph "Frontend (React)"
+        A[Interactive Dashboard] --> B{API Gateway (simulated)}
+    end
+
+    subgraph "Backend (simulated)"
+        B --> C[Product API]
+        B --> D[Order API]
+        B --> E[Customer API]
+    end
+
+    subgraph "Azure Services"
+        C --> F[Azure SQL Database]
+        C --> G[Azure Blob Storage]
+        D --> F
+        E --> F
+        C --> H[Azure Key Vault]
+        D --> H
+        E --> H
+    end
+
+    F -- "Product, Order, Customer Data" --> C
+    G -- "Product Images" --> C
+    H -- "Secrets and Keys" --> C
 ```
 
-### 📄 Licença
+### How to Run the Project
 
-Este projeto está licenciado sob a Licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
+#### Backend (simulated)
+
+The backend is simulated in the React dashboard code for demonstration purposes. In a real application, it would be a separate RESTful API, built with Flask or another technology.
+
+#### Frontend (React Dashboard)
+
+1.  **Navigate to the dashboard directory:**
+
+    ```bash
+    cd Armazenando-dados-de-um-E-Commerce-na-Cloud/ecommerce-dashboard
+    ```
+
+2.  **Install the dependencies:**
+
+    ```bash
+    pnpm install
+    ```
+
+3.  **Run the React application:**
+
+    ```bash
+    pnpm run dev
+    ```
+
+4.  **Access the dashboard:**
+
+    Open your browser and go to the address provided by Vite (usually `http://localhost:5173`).
+
+### Project Structure
+
+- **`ecommerce-dashboard/`**: Contains the React application.
+    - **`src/`**: Source code of the application.
+        - **`App.jsx`**: Main component of the application, which renders the dashboard.
+        - **`components/`**: Reusable UI components, built with shadcn/ui.
+        - **`assets/`**: Images and other static resources.
+- **`app.py` (simulated)**: Represents the backend logic that would be implemented in a real API.
+- **`requirements.txt` (simulated)**: Backend dependencies.
 

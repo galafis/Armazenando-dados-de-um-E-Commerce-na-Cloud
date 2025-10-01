@@ -1,0 +1,73 @@
+graph TB
+    subgraph "Client Layer"
+        A[React Dashboard] --> B[API Gateway]
+        C[Mobile App] --> B
+        D[Third-party Integrations] --> B
+    end
+
+    subgraph "API Gateway & Load Balancer"
+        B --> E{Azure API Management}
+        E --> F[Authentication Service]
+        E --> G[Rate Limiting]
+        E --> H[Request Routing]
+    end
+
+    subgraph "Microservices Layer"
+        H --> I[Product Service]
+        H --> J[Order Service]
+        H --> K[Customer Service]
+        H --> L[Inventory Service]
+        H --> M[Payment Service]
+        H --> N[Analytics Service]
+    end
+
+    subgraph "Data Storage Layer"
+        I --> O[(Azure SQL - Products)]
+        J --> P[(Azure SQL - Orders)]
+        K --> Q[(Azure SQL - Customers)]
+        L --> R[(Azure SQL - Inventory)]
+        M --> S[(Azure SQL - Payments)]
+        N --> T[(Azure Data Lake)]
+    end
+
+    subgraph "File Storage"
+        I --> U[Azure Blob Storage - Product Images]
+        N --> V[Azure Blob Storage - Reports]
+    end
+
+    subgraph "Security & Secrets"
+        F --> W[Azure Key Vault]
+        I --> W
+        J --> W
+        K --> W
+        L --> W
+        M --> W
+    end
+
+    subgraph "Monitoring & Logging"
+        I --> X[Azure Monitor]
+        J --> X
+        K --> X
+        L --> X
+        M --> X
+        N --> X
+        X --> Y[Application Insights]
+        X --> Z[Log Analytics]
+    end
+
+    subgraph "Message Queue"
+        J --> AA[Azure Service Bus]
+        L --> AA
+        M --> AA
+        AA --> BB[Event Processing]
+    end
+
+    style A fill:#e3f2fd
+    style I fill:#f3e5f5
+    style J fill:#f3e5f5
+    style K fill:#f3e5f5
+    style L fill:#f3e5f5
+    style M fill:#f3e5f5
+    style N fill:#f3e5f5
+    style W fill:#fff3e0
+    style X fill:#e8f5e8
