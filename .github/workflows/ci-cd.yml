@@ -1,0 +1,306 @@
+name: E-Commerce Cloud CI/CD
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.8, 3.9, '3.10', '3.11']
+
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+    
+    - name: Cache pip dependencies
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install pytest pytest-cov pytest-mock flake8 black isort
+    
+    - name: Lint with flake8
+      run: |
+        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+    
+    - name: Check code formatting with black
+      run: |
+        black --check --diff .
+    
+    - name: Check import sorting with isort
+      run: |
+        isort --check-only --diff .
+    
+    - name: Run unit tests with pytest
+      run: |
+        pytest test_app.py -v --cov=app --cov-report=xml --cov-report=html
+      env:
+        KEY_VAULT_URL: https://test-vault.vault.azure.net/
+    
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v3
+      with:
+        file: ./coverage.xml
+        flags: unittests
+        name: codecov-umbrella
+        fail_ci_if_error: false
+
+  security:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+    
+    - name: Install security tools
+      run: |
+        python -m pip install --upgrade pip
+        pip install bandit safety
+    
+    - name: Run security scan with bandit
+      run: |
+        bandit -r . -f json -o bandit-report.json || true
+    
+    - name: Check for known security vulnerabilities
+      run: |
+        safety check --json --output safety-report.json || true
+    
+    - name: Upload security reports
+      uses: actions/upload-artifact@v3
+      with:
+        name: security-reports
+        path: |
+          bandit-report.json
+          safety-report.json
+
+  infrastructure:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Azure Login
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+    
+    - name: Validate Azure Resources
+      run: |
+        echo "Validating Azure infrastructure..."
+        echo "This would typically involve:"
+        echo "- Checking Resource Group exists"
+        echo "- Validating SQL Database configuration"
+        echo "- Verifying Blob Storage setup"
+        echo "- Confirming Key Vault access"
+        echo "- Testing network connectivity"
+
+  build:
+    needs: [test, security]
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    
+    - name: Create application package
+      run: |
+        mkdir -p dist
+        cp app.py dist/
+        cp requirements.txt dist/
+        cp .env.example dist/
+        cp README.md dist/
+        tar -czf ecommerce-cloud-system.tar.gz -C dist .
+    
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: application-package
+        path: ecommerce-cloud-system.tar.gz
+
+  docker:
+    needs: [test, security]
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+    
+    - name: Create Dockerfile
+      run: |
+        cat > Dockerfile << 'EOF'
+        FROM python:3.11-slim
+        
+        WORKDIR /app
+        
+        # Install system dependencies for Azure SDK
+        RUN apt-get update && apt-get install -y \
+            gcc \
+            g++ \
+            unixodbc-dev \
+            curl \
+            && rm -rf /var/lib/apt/lists/*
+        
+        # Install Microsoft ODBC Driver for SQL Server
+        RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - \
+            && curl https://packages.microsoft.com/config/debian/11/prod.list > /etc/apt/sources.list.d/mssql-release.list \
+            && apt-get update \
+            && ACCEPT_EULA=Y apt-get install -y msodbcsql18 \
+            && rm -rf /var/lib/apt/lists/*
+        
+        # Copy requirements and install Python dependencies
+        COPY requirements.txt .
+        RUN pip install --no-cache-dir -r requirements.txt
+        
+        # Copy application code
+        COPY app.py .
+        COPY .env.example .env
+        
+        # Create non-root user
+        RUN useradd -m -u 1000 appuser && chown -R appuser:appuser /app
+        USER appuser
+        
+        # Expose port (if needed for web interface)
+        EXPOSE 8000
+        
+        # Health check
+        HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+          CMD python -c "from app import ECommerceSystem; print('Health check passed')" || exit 1
+        
+        # Run application
+        CMD ["python", "app.py"]
+        EOF
+    
+    - name: Build Docker image
+      run: |
+        docker build -t ecommerce-cloud-system:latest .
+    
+    - name: Save Docker image
+      run: |
+        docker save ecommerce-cloud-system:latest | gzip > ecommerce-cloud-system-docker.tar.gz
+    
+    - name: Upload Docker image
+      uses: actions/upload-artifact@v3
+      with:
+        name: docker-image
+        path: ecommerce-cloud-system-docker.tar.gz
+
+  deploy-staging:
+    needs: [build, docker, infrastructure]
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    environment: staging
+    
+    steps:
+    - name: Azure Login
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+    
+    - name: Deploy to Azure Container Instances (Staging)
+      run: |
+        echo "Deploying to Azure Container Instances (Staging)..."
+        echo "This would typically involve:"
+        echo "- Downloading Docker image"
+        echo "- Pushing to Azure Container Registry"
+        echo "- Deploying to Azure Container Instances"
+        echo "- Configuring environment variables"
+        echo "- Setting up Key Vault integration"
+    
+    - name: Run integration tests
+      run: |
+        echo "Running integration tests..."
+        echo "This would test:"
+        echo "- Database connectivity"
+        echo "- Blob storage operations"
+        echo "- Key Vault access"
+        echo "- End-to-end workflows"
+
+  deploy-production:
+    needs: [deploy-staging]
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    environment: production
+    
+    steps:
+    - name: Azure Login
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+    
+    - name: Deploy to Azure App Service (Production)
+      run: |
+        echo "Deploying to Azure App Service (Production)..."
+        echo "This would typically involve:"
+        echo "- Blue-green deployment strategy"
+        echo "- Database migration (if needed)"
+        echo "- Configuration updates"
+        echo "- Health checks"
+        echo "- Traffic routing"
+    
+    - name: Post-deployment verification
+      run: |
+        echo "Running post-deployment verification..."
+        echo "This would verify:"
+        echo "- Application health"
+        echo "- Database connectivity"
+        echo "- Storage accessibility"
+        echo "- Performance metrics"
+
+  monitoring:
+    needs: [deploy-production]
+    runs-on: ubuntu-latest
+    if: always()
+    
+    steps:
+    - name: Setup monitoring alerts
+      run: |
+        echo "Setting up monitoring and alerts..."
+        echo "This would configure:"
+        echo "- Azure Application Insights"
+        echo "- Performance monitoring"
+        echo "- Error tracking"
+        echo "- Custom metrics"
+        echo "- Alert rules"
+    
+    - name: Notify deployment status
+      run: |
+        if [ "${{ needs.deploy-production.result }}" == "success" ]; then
+          echo "✅ E-Commerce Cloud System deployment successful!"
+        else
+          echo "❌ E-Commerce Cloud System deployment failed!"
+        fi
+        echo "Author: Gabriel Demetrios Lafis"

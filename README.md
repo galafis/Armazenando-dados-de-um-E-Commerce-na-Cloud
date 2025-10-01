@@ -1,173 +1,244 @@
-# Armazenando dados de um E-Commerce na Cloud Azure
+_**Note**: This project was developed by Gabriel Demetrios Lafis._
 
-Neste projeto, implementei uma solução completa para armazenamento de dados de um e-commerce utilizando os serviços da Microsoft Azure. O objetivo foi criar uma infraestrutura robusta, escalável e segura para gerenciar produtos e suas imagens na nuvem.
+# E-Commerce Data Storage on Azure Cloud
 
-## Visão Geral da Solução
+---
 
-A solução implementada permite:
+## 🇬🇧 English
 
-- Armazenar informações de produtos (nome, descrição, preço) em um banco de dados SQL na nuvem
-- Salvar imagens dos produtos em um serviço de armazenamento de blobs
-- Gerenciar os recursos de forma organizada através de Resource Groups
-- Escalar os recursos conforme a necessidade do negócio
+### 📋 Description
 
-### Arquitetura da Solução
+This project implements a complete and secure data storage solution for an e-commerce platform using Microsoft Azure cloud services. The architecture is designed to handle product information and associated images in a scalable, reliable, and secure manner, forming the foundational backend for a modern online store.
+
+The solution leverages **Azure SQL Database** for structured product data (such as name, description, and price) and **Azure Blob Storage** for unstructured data, specifically product images. All resources are managed within a dedicated **Azure Resource Group** for organizational efficiency and cost tracking. A key security feature is the integration with **Azure Key Vault** to ensure that sensitive credentials are never hard-coded or exposed.
+
+### 🏛️ Architecture
+
+The architecture is designed for security and scalability, separating application logic from sensitive data and providing a clear path for future expansion into a microservices-based approach.
 
 ```mermaid
 graph TD
-    A[Aplicação E-commerce] --> B[Azure SQL Database]
-    A --> C[Azure Blob Storage]
-    B --> D[Dados dos Produtos]
-    C --> E[Imagens dos Produtos]
-    B -.-> F[Resource Group]
-    C -.-> F
+    subgraph "Application Layer"
+        A[E-commerce Backend API] 
+    end
+
+    subgraph "Azure Secure Infrastructure"
+        B[Azure Key Vault] -- Securely provides secrets --> A
+        A -- Stores/Retrieves Product Data --> C[Azure SQL Database]
+        A -- Stores/Retrieves Images --> D[Azure Blob Storage]
+    end
+
+    subgraph "Data Layer"
+        C -- Stores --> E[Product Information]
+        D -- Stores --> F[Product Images]
+    end
+
+    style A fill:#2E86C1,stroke:#1B4F72,stroke-width:2px,color:#fff
+    style B fill:#F39C12,stroke:#B7791F,stroke-width:2px,color:#fff
+    style C fill:#1ABC9C,stroke:#148F77,stroke-width:2px,color:#fff
+    style D fill:#9B59B6,stroke:#7D3C98,stroke-width:2px,color:#fff
 ```
 
-## Passo a Passo da Implementação
+### ✨ Features
 
-### 1. Criando um Resource Group e SQL Database
+- **Secure Credential Management**: Utilizes **Azure Key Vault** to store and manage database connection strings and storage account keys, eliminating security risks.
+- **Scalable Data Storage**: Employs **Azure SQL Database** and **Azure Blob Storage**, both of which can scale independently to meet business demands.
+- **Organized Resource Management**: All Azure resources are neatly organized within a single **Resource Group**.
+- **Robust Backend Logic**: A Python application using `pyodbc` and `azure-storage-blob` handles all data transactions securely.
+- **Complete CRUD Operations**: Provides endpoints for creating, reading, updating, and deleting products and their images.
 
-O primeiro passo foi criar um Resource Group para organizar todos os recursos relacionados ao projeto:
+### 🛠️ Tech Stack
 
-1. Acessei o [Portal Azure](https://portal.azure.com)
-2. Naveguei até "Resource Groups" e cliquei em "Create"
-3. Defini um nome significativo para o grupo (ex: "EcommerceResources")
-4. Selecionei a região mais próxima para melhor desempenho
-5. Adicionei tags para facilitar o gerenciamento de custos
+- **Cloud Platform**: Microsoft Azure
+- **Database**: Azure SQL Database
+- **Blob Storage**: Azure Blob Storage
+- **Security**: Azure Key Vault
+- **Backend**: Python
+- **Key Libraries**: `pyodbc`, `azure-storage-blob`, `azure-identity`, `python-dotenv`
 
-Em seguida, criei o banco de dados SQL:
+### 🚀 Getting Started
 
-1. No portal Azure, busquei por "SQL Database"
-2. Cliquei em "Create" e selecionei o Resource Group criado anteriormente
-3. Configurei o servidor SQL (novo ou existente)
-4. Escolhi o modelo de preços adequado para a carga de trabalho esperada
-5. Configurei as opções de rede para garantir a segurança dos dados
+#### Prerequisites
 
-### 2. Criando um Storage Account
+- An active **Azure Subscription**.
+- **Python 3.8+**.
+- **Azure CLI** installed and authenticated (`az login`).
 
-Para armazenar as imagens dos produtos, criei um Storage Account:
+#### Installation & Configuration
 
-1. No portal Azure, busquei por "Storage Account"
-2. Cliquei em "Create" e selecionei o Resource Group criado anteriormente
-3. Defini um nome único para o Storage Account
-4. Escolhi a região mais próxima (idealmente a mesma do SQL Database)
-5. Selecionei o nível de performance (Standard para a maioria dos casos)
-6. Configurei as opções de redundância (LRS, GRS, ZRS) de acordo com as necessidades de disponibilidade
+1.  **Clone the Repository**:
+    ```bash
+    git clone https://github.com/galafis/Armazenando-dados-de-um-E-Commerce-na-Cloud.git
+    cd Armazenando-dados-de-um-E-Commerce-na-Cloud
+    ```
 
-Após a criação do Storage Account, criei um contêiner específico para as imagens dos produtos:
+2.  **Set up Azure Resources**:
+    - **Resource Group**: Create a resource group to hold all project resources.
+    - **Azure SQL Database**: Provision a new SQL server and database.
+    - **Azure Blob Storage**: Create a new storage account and a container within it (e.g., `product-images`).
+    - **Azure Key Vault**: Create a Key Vault instance to store your secrets.
 
-1. Acessei o Storage Account criado
-2. Naveguei até "Containers" e cliquei em "New container"
-3. Nomeei o contêiner como "product-images"
-4. Defini o nível de acesso público apropriado (Blob para permitir acesso direto às imagens)
+3.  **Configure Azure Key Vault**:
+    - Add your SQL connection string and Blob Storage connection string as **secrets** in your Key Vault.
+    - Grant your local user or a service principal access to these secrets.
 
-### 3. Configurando o Banco de Dados e Criando a Tabela de Produtos
+4.  **Set up Python Environment**:
+    ```bash
+    python -m venv venv
+    source venv/bin/activate  # On Windows: venv\Scripts\activate
+    pip install -r requirements.txt
+    ```
 
-Com o banco de dados SQL criado, configurei a tabela para armazenar os produtos:
+5.  **Configure Environment Variables**:
+    Create a `.env` file in the root directory and add the URL of your Azure Key Vault:
+    ```
+    KEY_VAULT_URL=https://your-key-vault-name.vault.azure.net/
+    ```
 
-1. Conectei ao banco de dados usando o Azure Data Studio ou SQL Server Management Studio
-2. Criei a tabela de produtos com a seguinte estrutura:
+6.  **Run the Application**:
+    ```bash
+    python app.py
+    ```
 
-```sql
-CREATE TABLE Products (
-    ProductId INT PRIMARY KEY IDENTITY(1,1),
-    Name NVARCHAR(100) NOT NULL,
-    Description NVARCHAR(MAX),
-    Price DECIMAL(18,2) NOT NULL,
-    ImageUrl NVARCHAR(255),
-    CreatedAt DATETIME DEFAULT GETDATE()
-);
+### 💻 Usage
+
+The application provides a set of functions to manage products. Below is an example of how to use the core logic:
+
+```python
+from app import add_product, get_product
+
+# Example: Add a new product
+image_path = "path/to/local/image.jpg"
+product_id = add_product("Laptop Pro", "A powerful new laptop.", 1499.99, image_path)
+print(f"New product created with ID: {product_id}")
+
+# Example: Retrieve a product
+product = get_product(product_id)
+print(f"Retrieved Product: {product['Name']}, Price: ${product['Price']}")
+print(f"Image URL: {product['ImageUrl']}")
 ```
 
-3. Configurei índices para otimizar as consultas mais frequentes:
+### 📄 License
 
-```sql
-CREATE INDEX IX_Products_Name ON Products(Name);
-CREATE INDEX IX_Products_Price ON Products(Price);
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+
+---
+
+## 🇧🇷 Português
+
+### 📋 Descrição
+
+Este projeto implementa uma solução completa e segura de armazenamento de dados para uma plataforma de e-commerce utilizando os serviços em nuvem da Microsoft Azure. A arquitetura foi projetada para gerenciar informações de produtos e suas imagens associadas de forma escalável, confiável e segura, formando o backend fundamental para uma loja online moderna.
+
+A solução utiliza o **Azure SQL Database** para dados estruturados de produtos (como nome, descrição e preço) e o **Azure Blob Storage** para dados não estruturados, especificamente as imagens dos produtos. Todos os recursos são gerenciados dentro de um **Grupo de Recursos do Azure** dedicado para eficiência organizacional e controle de custos. Uma característica chave de segurança é a integração com o **Azure Key Vault** para garantir que credenciais sensíveis nunca sejam codificadas ou expostas.
+
+### 🏛️ Arquitetura
+
+A arquitetura foi projetada para segurança e escalabilidade, separando a lógica da aplicação de dados sensíveis e fornecendo um caminho claro para futura expansão em uma abordagem baseada em microsserviços.
+
+```mermaid
+graph TD
+    subgraph "Camada de Aplicação"
+        A[API Backend do E-commerce] 
+    end
+
+    subgraph "Infraestrutura Segura do Azure"
+        B[Azure Key Vault] -- Fornece segredos com segurança --> A
+        A -- Armazena/Recupera Dados de Produtos --> C[Azure SQL Database]
+        A -- Armazena/Recupera Imagens --> D[Azure Blob Storage]
+    end
+
+    subgraph "Camada de Dados"
+        C -- Armazena --> E[Informações de Produtos]
+        D -- Armazena --> F[Imagens de Produtos]
+    end
+
+    style A fill:#2E86C1,stroke:#1B4F72,stroke-width:2px,color:#fff
+    style B fill:#F39C12,stroke:#B7791F,stroke-width:2px,color:#fff
+    style C fill:#1ABC9C,stroke:#148F77,stroke-width:2px,color:#fff
+    style D fill:#9B59B6,stroke:#7D3C98,stroke-width:2px,color:#fff
 ```
 
-4. Implementei políticas de segurança e backup para garantir a integridade dos dados
+### ✨ Funcionalidades
 
-### 4. Implementando o Salvamento de Imagens no Blob Storage
+- **Gerenciamento Seguro de Credenciais**: Utiliza o **Azure Key Vault** para armazenar e gerenciar connection strings de banco de dados e chaves de conta de armazenamento, eliminando riscos de segurança.
+- **Armazenamento de Dados Escalável**: Emprega o **Azure SQL Database** e o **Azure Blob Storage**, ambos capazes de escalar independentemente para atender às demandas do negócio.
+- **Gerenciamento Organizado de Recursos**: Todos os recursos do Azure são organizados de forma limpa em um único **Grupo de Recursos**.
+- **Lógica de Backend Robusta**: Uma aplicação Python utilizando `pyodbc` e `azure-storage-blob` lida com todas as transações de dados de forma segura.
+- **Operações CRUD Completas**: Fornece endpoints para criar, ler, atualizar e deletar produtos e suas imagens.
 
-Para integrar o upload de imagens com o Blob Storage, implementei o seguinte fluxo:
+### 🛠️ Tecnologias Utilizadas
 
-1. Quando um produto é cadastrado, a imagem é enviada para o Blob Storage
-2. A URL da imagem é gerada e armazenada no campo ImageUrl da tabela Products
-3. Ao exibir o produto, a aplicação utiliza a URL para mostrar a imagem
+- **Plataforma de Nuvem**: Microsoft Azure
+- **Banco de Dados**: Azure SQL Database
+- **Armazenamento de Blobs**: Azure Blob Storage
+- **Segurança**: Azure Key Vault
+- **Backend**: Python
+- **Bibliotecas Principais**: `pyodbc`, `azure-storage-blob`, `azure-identity`, `python-dotenv`
 
-Exemplo de código para upload de imagem:
+### 🚀 Como Começar
 
-```csharp
-// Exemplo de código para upload de imagem para o Blob Storage
-public async Task<string> UploadProductImage(string productId, Stream imageStream, string contentType)
-{
-    // Obter referência para o contêiner de imagens
-    BlobContainerClient containerClient = new BlobContainerClient(_storageConnectionString, "product-images");
-    
-    // Garantir que o contêiner existe
-    await containerClient.CreateIfNotExistsAsync();
-    
-    // Criar um nome único para o blob
-    string blobName = $"{productId}-{Guid.NewGuid().ToString()}{Path.GetExtension(contentType)}";
-    
-    // Obter referência para o blob
-    BlobClient blobClient = containerClient.GetBlobClient(blobName);
-    
-    // Fazer upload da imagem
-    await blobClient.UploadAsync(imageStream, new BlobHttpHeaders { ContentType = contentType });
-    
-    // Retornar a URL da imagem
-    return blobClient.Uri.ToString();
-}
+#### Pré-requisitos
+
+- Uma **Assinatura do Azure** ativa.
+- **Python 3.8+**.
+- **Azure CLI** instalado e autenticado (`az login`).
+
+#### Instalação e Configuração
+
+1.  **Clonar o Repositório**:
+    ```bash
+    git clone https://github.com/galafis/Armazenando-dados-de-um-E-Commerce-na-Cloud.git
+    cd Armazenando-dados-de-um-E-Commerce-na-Cloud
+    ```
+
+2.  **Configurar Recursos no Azure**:
+    - **Grupo de Recursos**: Crie um grupo de recursos para conter todos os recursos do projeto.
+    - **Azure SQL Database**: Provisione um novo servidor e banco de dados SQL.
+    - **Azure Blob Storage**: Crie uma nova conta de armazenamento e um contêiner dentro dela (ex: `product-images`).
+    - **Azure Key Vault**: Crie uma instância do Key Vault para armazenar seus segredos.
+
+3.  **Configurar o Azure Key Vault**:
+    - Adicione sua connection string do SQL e a connection string do Blob Storage como **segredos** no seu Key Vault.
+    - Conceda ao seu usuário local ou a uma entidade de serviço acesso a esses segredos.
+
+4.  **Configurar Ambiente Python**:
+    ```bash
+    python -m venv venv
+    source venv/bin/activate  # No Windows: venv\Scripts\activate
+    pip install -r requirements.txt
+    ```
+
+5.  **Configurar Variáveis de Ambiente**:
+    Crie um arquivo `.env` no diretório raiz e adicione a URL do seu Azure Key Vault:
+    ```
+    KEY_VAULT_URL=https://seu-key-vault-name.vault.azure.net/
+    ```
+
+6.  **Executar a Aplicação**:
+    ```bash
+    python app.py
+    ```
+
+### 💻 Uso
+
+A aplicação fornece um conjunto de funções para gerenciar produtos. Abaixo está um exemplo de como usar a lógica principal:
+
+```python
+from app import add_product, get_product
+
+# Exemplo: Adicionar um novo produto
+image_path = "caminho/para/imagem/local.jpg"
+product_id = add_product("Laptop Pro", "Um novo e poderoso laptop.", 1499.99, image_path)
+print(f"Novo produto criado com ID: {product_id}")
+
+# Exemplo: Recuperar um produto
+product = get_product(product_id)
+print(f"Produto Recuperado: {product['Name']}, Preço: R${product['Price']}")
+print(f"URL da Imagem: {product['ImageUrl']}")
 ```
 
-## Benefícios da Solução
+### 📄 Licença
 
-Ao implementar esta solução na Azure, obtive diversos benefícios:
+Este projeto está licenciado sob a Licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
 
-1. **Escalabilidade**: Tanto o SQL Database quanto o Blob Storage podem escalar conforme o crescimento do negócio
-2. **Disponibilidade**: Os serviços Azure oferecem alta disponibilidade com SLAs robustos
-3. **Segurança**: Dados protegidos por criptografia em repouso e em trânsito
-4. **Gerenciamento simplificado**: Recursos organizados em um único Resource Group
-5. **Custo otimizado**: Pagamento apenas pelos recursos utilizados
-
-## Insights e Possibilidades Futuras
-
-Durante o desenvolvimento deste projeto, aprendi várias lições valiosas sobre a implementação de soluções na nuvem Azure:
-
-1. **Arquitetura de Microserviços**: No futuro, posso evoluir esta solução para uma arquitetura de microserviços utilizando Azure Kubernetes Service (AKS) ou Azure Container Apps.
-
-2. **Processamento Assíncrono**: Implementar Azure Functions para processar eventos como notificações de estoque baixo ou processamento de imagens em segundo plano.
-
-3. **API Management**: Adicionar uma camada de API Management para expor os serviços de forma segura e controlada.
-
-4. **Análise de Dados**: Integrar com serviços como Azure Synapse Analytics para obter insights de negócio a partir dos dados de vendas e comportamento do cliente.
-
-5. **Autenticação e Autorização**: Implementar Azure AD B2C para gerenciar identidades de clientes de forma segura.
-
-## Conclusão
-
-A implementação de uma solução de e-commerce na nuvem Azure proporcionou uma base sólida e escalável para o armazenamento de dados de produtos e suas imagens. Com os serviços de Resource Group, SQL Database e Blob Storage, consegui criar uma infraestrutura que atende às necessidades atuais e está preparada para crescer junto com o negócio.
-
-Este projeto representa apenas o início da jornada na nuvem. Com a vasta gama de serviços oferecidos pela Microsoft Azure, as possibilidades de evolução são praticamente ilimitadas.
-
-
-## 📋 Descrição
-
-Descreva aqui o conteúdo desta seção.
-
-
-## 📦 Instalação
-
-Descreva aqui o conteúdo desta seção.
-
-
-## 💻 Uso
-
-Descreva aqui o conteúdo desta seção.
-
-
-## 📄 Licença
-
-Descreva aqui o conteúdo desta seção.

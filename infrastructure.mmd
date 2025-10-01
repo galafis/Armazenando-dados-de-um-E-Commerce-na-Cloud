@@ -1,0 +1,48 @@
+graph TB
+    subgraph "Application Layer"
+        A[E-commerce Backend<br/>Python Application]
+        B[Product Management<br/>CRUD Operations]
+    end
+
+    subgraph "Security Layer"
+        C[Azure Key Vault<br/>Secrets Management]
+        D[Connection Strings<br/>Storage Keys]
+    end
+
+    subgraph "Data Storage"
+        E[Azure SQL Database<br/>Product Information]
+        F[Azure Blob Storage<br/>Product Images]
+    end
+
+    subgraph "Resource Management"
+        G[Azure Resource Group<br/>Organized Resources]
+        H[Cost Management<br/>Monitoring & Billing]
+    end
+
+    subgraph "Data Schema"
+        I[Products Table<br/>ID, Name, Description<br/>Price, ImageUrl]
+        J[Blob Container<br/>product-images]
+    end
+
+    A --> C
+    B --> C
+    C --> D
+    A --> E
+    A --> F
+    E --> I
+    F --> J
+    G --> E
+    G --> F
+    G --> C
+    G --> H
+
+    style A fill:#2196F3,color:#fff
+    style B fill:#2196F3,color:#fff
+    style C fill:#FF9800,color:#fff
+    style D fill:#FF9800,color:#fff
+    style E fill:#4CAF50,color:#fff
+    style F fill:#9C27B0,color:#fff
+    style G fill:#607D8B,color:#fff
+    style H fill:#607D8B,color:#fff
+    style I fill:#4CAF50,color:#fff
+    style J fill:#9C27B0,color:#fff
