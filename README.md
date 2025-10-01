@@ -13,7 +13,7 @@
 ![License](https://img.shields.io/github/license/galafis/Armazenando-dados-de-um-E-Commerce-na-Cloud?style=for-the-badge)
 ![Stars](https://img.shields.io/github/stars/galafis/Armazenando-dados-de-um-E-Commerce-na-Cloud?style=for-the-badge)
 
-[**Ver Dashboard Interativo**](https://galafis.github.io/E-Commerce-Dashboard-Demo/) | [**Documentação da API**](https://galafis.github.io/Armazenando-dados-de-um-E-Commerce-na-Cloud/api-docs)
+[**Ver Código no GitHub**](https://github.com/galafis/Armazenando-dados-de-um-E-Commerce-na-Cloud) | [**Documentação Completa**](https://github.com/galafis/Armazenando-dados-de-um-E-Commerce-na-Cloud/blob/main/README.md)
 
 ![E-Commerce Cloud Storage System](./advanced-hero-image.png)
 
