@@ -4,7 +4,14 @@
 
 **Autor:** Gabriel Demetrios Lafis
 
+![Build Status](https://img.shields.io/github/actions/workflow/status/galafis/Armazenando-dados-de-um-E-Commerce-na-Cloud/ci-cd.yml?style=for-the-badge)
+![License](https://img.shields.io/github/license/galafis/Armazenando-dados-de-um-E-Commerce-na-Cloud?style=for-the-badge)
+![Stars](https://img.shields.io/github/stars/galafis/Armazenando-dados-de-um-E-Commerce-na-Cloud?style=for-the-badge)
+
+[**Ver Dashboard Interativo**](https://galafis.github.io/E-Commerce-Dashboard-Demo/) | [**Documentação da API**](https://galafis.github.io/Armazenando-dados-de-um-E-Commerce-na-Cloud/api-docs)
+
 ![E-Commerce Cloud Storage System](./advanced-hero-image.png)
+
 
 ---
 
