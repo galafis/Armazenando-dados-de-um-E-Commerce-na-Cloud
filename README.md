@@ -1,10 +1,15 @@
-> Este README.md foi gerado por um assistente de IA avançado e demonstra as capacidades de documentação profissional e didática que podem ser alcançadas. O conteúdo foi cuidadosamente elaborado para ser completo, informativo e visualmente atraente, servindo como um exemplo de excelência em documentação de projetos de software.
+
 
 # E-Commerce Cloud Storage System
 
 **Autor:** Gabriel Demetrios Lafis
 
-![Build Status](https://img.shields.io/github/actions/workflow/status/galafis/Armazenando-dados-de-um-E-Commerce-na-Cloud/ci-cd.yml?style=for-the-badge)
+![Python](https://img.shields.io/badge/Python-3.9%2B-blue?style=for-the-badge&logo=python&logoColor=white)
+![Azure](https://img.shields.io/badge/Microsoft-Azure-blue?style=for-the-badge&logo=microsoft-azure&logoColor=white)
+![Azure Blob Storage](https://img.shields.io/badge/Azure-Blob%20Storage-blue?style=for-the-badge&logo=microsoft-azure&logoColor=white)
+![Azure Key Vault](https://img.shields.io/badge/Azure-Key%20Vault-blue?style=for-the-badge&logo=microsoft-azure&logoColor=white)
+![SQL Server](https://img.shields.io/badge/SQL-Server-red?style=for-the-badge&logo=microsoft-sql-server&logoColor=white)
+![React](https://img.shields.io/badge/React-18.0-blue?style=for-the-badge&logo=react&logoColor=white)
 ![License](https://img.shields.io/github/license/galafis/Armazenando-dados-de-um-E-Commerce-na-Cloud?style=for-the-badge)
 ![Stars](https://img.shields.io/github/stars/galafis/Armazenando-dados-de-um-E-Commerce-na-Cloud?style=for-the-badge)
 
