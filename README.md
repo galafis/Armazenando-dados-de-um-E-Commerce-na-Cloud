@@ -13,7 +13,8 @@
 
 [Ver Código no GitHub](https://github.com/galafis/Armazenando-dados-de-um-E-Commerce-na-Cloud) | [Visualizar no GitHub Pages](https://galafis.github.io/Armazenando-dados-de-um-E-Commerce-na-Cloud/)
 
-![E-Commerce Cloud Storage System](advanced-hero-image.png)
+![E-Commerce Cloud Storage System](new-hero-image.png)
+
 
 ## 📁 Estrutura do Projeto
 
@@ -60,46 +61,15 @@ O sistema inclui um dashboard interativo em React para visualização de dados, 
 
 ### Arquitetura do Sistema
 
-O diagrama a seguir ilustra a arquitetura do Sistema de Armazenamento em Nuvem para E-Commerce na Azure:
+O diagrama a seguir ilustra a arquitetura de microsserviços do Sistema de Armazenamento em Nuvem para E-Commerce na Azure:
 
-```mermaid
-graph TD
-    subgraph "Frontend React"
-        A[Dashboard Interativo] --> B[API Gateway]
-        A --> C[Gerenciamento de Produtos]
-        A --> D[Analytics Dashboard]
-        A --> E[Monitoramento Azure]
-    end
+![Arquitetura de Microsserviços](microservices-architecture.png)
 
-    subgraph "Backend APIs"
-        B --> F[API de Produtos]
-        B --> G[API de Pedidos]
-        B --> H[API de Clientes]
-        B --> I[API de Analytics]
-    end
+O diagrama abaixo detalha a infraestrutura de armazenamento e segurança:
 
-    subgraph "Azure Cloud Services"
-        F --> J[Azure SQL Database]
-        F --> K[Azure Blob Storage]
-        G --> J
-        H --> J
-        I --> J
-        
-        F --> L[Azure Key Vault]
-        G --> L
-        H --> L
-    end
+![Infraestrutura do Sistema](infrastructure.png)
 
-    subgraph "Segurança e Monitoramento"
-        L --> M[Secrets Management]
-        N[Azure Monitor] --> O[Application Insights]
-        P[Azure Security Center] --> Q[Threat Protection]
-    end
 
-    J -.->|Dados Estruturados| F
-    K -.->|Imagens e Arquivos| F
-    L -.->|Credenciais Seguras| F
-```
 
 ### Como Executar o Projeto
 
@@ -153,46 +123,15 @@ The system includes an interactive React dashboard for data visualization, produ
 
 ### System Architecture
 
-The following diagram illustrates the architecture of the E-Commerce Cloud Storage System on Azure:
+The following diagram illustrates the microservices architecture of the E-Commerce Cloud Storage System on Azure:
 
-```mermaid
-graph TD
-    subgraph "Frontend React"
-        A[Interactive Dashboard] --> B[API Gateway]
-        A --> C[Product Management]
-        A --> D[Analytics Dashboard]
-        A --> E[Azure Monitoring]
-    end
+![Microservices Architecture](microservices-architecture.png)
 
-    subgraph "Backend APIs"
-        B --> F[Products API]
-        B --> G[Orders API]
-        B --> H[Customers API]
-        B --> I[Analytics API]
-    end
+The diagram below details the storage and security infrastructure:
 
-    subgraph "Azure Cloud Services"
-        F --> J[Azure SQL Database]
-        F --> K[Azure Blob Storage]
-        G --> J
-        H --> J
-        I --> J
-        
-        F --> L[Azure Key Vault]
-        G --> L
-        H --> L
-    end
+![System Infrastructure](infrastructure.png)
 
-    subgraph "Security and Monitoring"
-        L --> M[Secrets Management]
-        N[Azure Monitor] --> O[Application Insights]
-        P[Azure Security Center] --> Q[Threat Protection]
-    end
 
-    J -.->|Structured Data| F
-    K -.->|Images and Files| F
-    L -.->|Secure Credentials| F
-```
 
 ### How to Run the Project
 
