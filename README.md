@@ -244,3 +244,4 @@ The backend is simulated in the React dashboard code for demonstration purposes.
 - **`app.py` (simulated)**: Represents the backend logic that would be implemented in a real API.
 - **`requirements.txt` (simulated)**: Backend dependencies.
 
+
