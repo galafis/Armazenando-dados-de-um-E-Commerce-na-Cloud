@@ -85,7 +85,7 @@ graph TD
     end
 
     subgraph "Azure Cloud Services"
-        F --> J[(Azure SQL Database)]
+        F --> J[Azure SQL Database]
         F --> K[Azure Blob Storage]
         G --> J
         H --> J
