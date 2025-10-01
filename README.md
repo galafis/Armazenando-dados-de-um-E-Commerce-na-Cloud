@@ -11,7 +11,7 @@
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Stars](https://img.shields.io/github/stars/galafis/Armazenando-dados-de-um-E-Commerce-na-Cloud.svg)](https://github.com/galafis/Armazenando-dados-de-um-E-Commerce-na-Cloud/stargazers)
 
-[Ver Código no GitHub](https://github.com/galafis/Armazenando-dados-de-um-E-Commerce-na-Cloud) | [Documentação Completa](https://github.com/galafis/Armazenando-dados-de-um-E-Commerce-na-Cloud)
+[Ver Código no GitHub](https://github.com/galafis/Armazenando-dados-de-um-E-Commerce-na-Cloud) | [Visualizar no GitHub Pages](https://galafis.github.io/Armazenando-dados-de-um-E-Commerce-na-Cloud/)
 
 ![E-Commerce Cloud Storage System](advanced-hero-image.png)
 
@@ -246,4 +246,4 @@ Este projeto está licenciado sob a Licença MIT - veja o arquivo [LICENSE](LICE
 
 ---
 
-*Este projeto foi desenvolvido como parte do bootcamp DIO em parceria com a Microsoft Azure, demonstrando as melhores práticas para desenvolvimento de aplicações cloud-native.*
+
