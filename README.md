@@ -70,29 +70,41 @@ O diagrama a seguir ilustra a arquitetura do Sistema de Armazenamento em Nuvem p
 
 ```mermaid
 graph TD
-    subgraph "Frontend (React)"
-        A[Dashboard Interativo] --> B{API Gateway (simulado)}
+    subgraph "Frontend React"
+        A[Dashboard Interativo] --> B[API Gateway]
+        A --> C[Gerenciamento de Produtos]
+        A --> D[Analytics Dashboard]
+        A --> E[Monitoramento Azure]
     end
 
-    subgraph "Backend (simulado)"
-        B --> C[API de Produtos]
-        B --> D[API de Pedidos]
-        B --> E[API de Clientes]
+    subgraph "Backend APIs"
+        B --> F[API de Produtos]
+        B --> G[API de Pedidos]
+        B --> H[API de Clientes]
+        B --> I[API de Analytics]
     end
 
-    subgraph "Serviços da Azure"
-        C --> F[Azure SQL Database]
-        C --> G[Azure Blob Storage]
-        D --> F
-        E --> F
-        C --> H[Azure Key Vault]
-        D --> H
-        E --> H
+    subgraph "Azure Cloud Services"
+        F --> J[(Azure SQL Database)]
+        F --> K[Azure Blob Storage]
+        G --> J
+        H --> J
+        I --> J
+        
+        F --> L[Azure Key Vault]
+        G --> L
+        H --> L
     end
 
-    F -- "Dados de Produtos, Pedidos, Clientes" --> C
-    G -- "Imagens de Produtos" --> C
-    H -- "Segredos e Chaves" --> C
+    subgraph "Segurança e Monitoramento"
+        L --> M[Secrets Management]
+        N[Azure Monitor] --> O[Application Insights]
+        P[Azure Security Center] --> Q[Threat Protection]
+    end
+
+    J -.->|Dados Estruturados| F
+    K -.->|Imagens e Arquivos| F
+    L -.->|Credenciais Seguras| F
 ```
 
 ### Como Executar o Projeto
