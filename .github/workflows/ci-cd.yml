@@ -107,7 +107,7 @@ jobs:
         npm run build
     
     - name: Upload frontend build artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: frontend-build
         path: ecommerce-dashboard/dist/
@@ -192,7 +192,7 @@ jobs:
         path: frontend-dist/
     
     - name: Upload complete build artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: complete-build
         path: |
