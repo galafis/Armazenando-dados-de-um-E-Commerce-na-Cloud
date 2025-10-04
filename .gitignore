@@ -17,3 +17,12 @@ Thumbs.db
 
 node_modules/
 
+
+
+# Python virtual environment
+venv_backend/
+__pycache__/
+
+# Frontend build output
+ecommerce-dashboard/dist/
+
