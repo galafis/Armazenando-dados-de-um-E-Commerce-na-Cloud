@@ -16,11 +16,11 @@ from pathlib import Path
 import pyodbc
 from azure.storage.blob import BlobServiceClient, BlobClient
 from azure.identity import DefaultAzureCredential
-from azure.keyvault.secrets import SecretClient
+
 from dotenv import load_dotenv
 
 # Load environment variables
-load_dotenv()
+load_dotenv(dotenv_path=Path(__file__).resolve().parent / ".env")
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -36,32 +36,20 @@ class Product:
     image_url: str = ""
     created_at: Optional[datetime] = None
 
-class AzureKeyVaultManager:
-    """Manages Azure Key Vault operations for secure credential storage"""
-    
-    def __init__(self, vault_url: str):
-        self.vault_url = vault_url
-        self.credential = DefaultAzureCredential()
-        self.client = SecretClient(vault_url=vault_url, credential=self.credential)
-    
-    def get_secret(self, secret_name: str) -> str:
-        """Retrieve a secret from Azure Key Vault"""
-        try:
-            secret = self.client.get_secret(secret_name)
-            return secret.value
-        except Exception as e:
-            logger.error(f"Error retrieving secret {secret_name}: {str(e)}")
-            raise
-
 class DatabaseManager:
     """Manages Azure SQL Database operations"""
     
-    def __init__(self, connection_string: str):
+    def __init__(self, connection_string: str, mock_mode: bool = False):
         self.connection_string = connection_string
-        self.init_database()
+        self.mock_mode = mock_mode
+        if not self.mock_mode:
+            self.init_database()
     
     def init_database(self):
         """Initialize database schema"""
+        if self.mock_mode:
+            logger.info("Database initialization skipped in mock mode.")
+            return
         try:
             with pyodbc.connect(self.connection_string) as conn:
                 cursor = conn.cursor()
@@ -79,6 +67,7 @@ class DatabaseManager:
                 );
                 """
                 cursor.execute(create_table_sql)
+
                 
                 # Create indexes for better performance
                 index_sql = """
@@ -99,6 +88,9 @@ class DatabaseManager:
     
     def add_product(self, product: Product) -> int:
         """Add a new product to the database"""
+        if self.mock_mode:
+            logger.info(f"Adding product {product.name} in mock mode.")
+            return 1 # Simulate a product ID
         try:
             with pyodbc.connect(self.connection_string) as conn:
                 cursor = conn.cursor()
@@ -124,6 +116,11 @@ class DatabaseManager:
     
     def get_product(self, product_id: int) -> Optional[Product]:
         """Retrieve a product by ID"""
+        if self.mock_mode:
+            logger.info(f"Retrieving product {product_id} in mock mode.")
+            if product_id == 1:
+                return Product(product_id=1, name="Sample Laptop (Mock)", description="A high-performance laptop for professionals (Mock)", price=1299.99, image_url="http://mockimage.com/mock.jpg", created_at=datetime.now())
+            return None
         try:
             with pyodbc.connect(self.connection_string) as conn:
                 cursor = conn.cursor()
@@ -155,6 +152,12 @@ class DatabaseManager:
     
     def list_products(self, limit: int = 50) -> List[Product]:
         """List all products with optional limit"""
+        if self.mock_mode:
+            logger.info("Listing products in mock mode.")
+            return [
+                Product(product_id=1, name="Sample Laptop (Mock)", description="A high-performance laptop for professionals (Mock)", price=1299.99, image_url="http://mockimage.com/mock.jpg", created_at=datetime.now()),
+                Product(product_id=2, name="Sample Smartphone (Mock)", description="A powerful smartphone with great camera (Mock)", price=799.99, image_url="http://mockimage.com/mock_phone.jpg", created_at=datetime.now())
+            ]
         try:
             with pyodbc.connect(self.connection_string) as conn:
                 cursor = conn.cursor()
@@ -187,6 +190,9 @@ class DatabaseManager:
     
     def update_product(self, product: Product) -> bool:
         """Update an existing product"""
+        if self.mock_mode:
+            logger.info(f"Updating product {product.product_id} in mock mode.")
+            return True
         try:
             with pyodbc.connect(self.connection_string) as conn:
                 cursor = conn.cursor()
@@ -216,6 +222,9 @@ class DatabaseManager:
     
     def delete_product(self, product_id: int) -> bool:
         """Delete a product by ID"""
+        if self.mock_mode:
+            logger.info(f"Deleting product {product_id} in mock mode.")
+            return True
         try:
             with pyodbc.connect(self.connection_string) as conn:
                 cursor = conn.cursor()
@@ -240,23 +249,28 @@ class DatabaseManager:
 class BlobStorageManager:
     """Manages Azure Blob Storage operations for product images"""
     
-    def __init__(self, connection_string: str, container_name: str = "product-images"):
+    def __init__(self, connection_string: str, container_name: str = "product-images", mock_mode: bool = False):
         self.connection_string = connection_string
         self.container_name = container_name
-        self.blob_service_client = BlobServiceClient.from_connection_string(connection_string)
-        self.init_container()
+        self.mock_mode = mock_mode
+        if not self.mock_mode:
+            self.blob_service_client = BlobServiceClient.from_connection_string(connection_string)
+            self.init_container()
     
     def init_container(self):
         """Initialize blob container"""
+        if self.mock_mode:
+            logger.info("Blob container initialization skipped in mock mode.")
+            return
         try:
             container_client = self.blob_service_client.get_container_client(self.container_name)
             
             # Create container if it doesn't exist
             if not container_client.exists():
                 container_client.create_container(public_access='blob')
-                logger.info(f"Container '{self.container_name}' created successfully")
+                logger.info(f"Container \'{self.container_name}\' created successfully")
             else:
-                logger.info(f"Container '{self.container_name}' already exists")
+                logger.info(f"Container \'{self.container_name}\' already exists")
                 
         except Exception as e:
             logger.error(f"Error initializing container: {str(e)}")
@@ -264,6 +278,9 @@ class BlobStorageManager:
     
     def upload_image(self, product_id: int, image_path: str, content_type: str = "image/jpeg") -> str:
         """Upload product image to blob storage"""
+        if self.mock_mode:
+            logger.info(f"Uploading image for product {product_id} in mock mode.")
+            return f"http://mockimage.com/product-{product_id}-mock.jpg"
         try:
             # Generate unique blob name
             file_extension = Path(image_path).suffix
@@ -293,9 +310,12 @@ class BlobStorageManager:
     
     def delete_image(self, image_url: str) -> bool:
         """Delete image from blob storage"""
+        if self.mock_mode:
+            logger.info(f"Deleting image {image_url} in mock mode.")
+            return True
         try:
             # Extract blob name from URL
-            blob_name = image_url.split('/')[-1]
+            blob_name = image_url.split("/")[-1]
             
             blob_client = self.blob_service_client.get_blob_client(
                 container=self.container_name,
@@ -312,98 +332,96 @@ class BlobStorageManager:
 
 class ECommerceSystem:
     """Main e-commerce system class"""
-    
-    def __init__(self):
-        self.key_vault_url = os.getenv('KEY_VAULT_URL')
-        
-        if not self.key_vault_url:
-            raise ValueError("KEY_VAULT_URL environment variable is required")
-        
-        # Initialize Azure Key Vault
-        self.key_vault = AzureKeyVaultManager(self.key_vault_url)
-        
-        # Get connection strings from Key Vault
-        sql_connection_string = self.key_vault.get_secret('sql-connection-string')
-        blob_connection_string = self.key_vault.get_secret('blob-connection-string')
-        
-        # Initialize managers
-        self.db_manager = DatabaseManager(sql_connection_string)
-        self.blob_manager = BlobStorageManager(blob_connection_string)
-        
+    def __init__(self, mock_mode: bool = False):
+        self.mock_mode = mock_mode
+        if self.mock_mode:
+            logger.info("E-Commerce system initialized in mock mode.")
+            self.db_manager = DatabaseManager(connection_string="mock_sql_connection_string", mock_mode=True)
+            self.blob_manager = BlobStorageManager(connection_string="mock_blob_connection_string", container_name="mock_container", mock_mode=True)
+        else:
+
+            sql_connection_string = os.getenv("SQL_CONNECTION_STRING")
+            blob_connection_string = os.getenv("BLOB_CONNECTION_STRING")
+            blob_container_name = os.getenv("BLOB_CONTAINER_NAME", "ecommerce-images")
+
+            if not sql_connection_string or not blob_connection_string:
+                logger.error("Missing environment variables for connection strings.")
+                raise ValueError("SQL_CONNECTION_STRING and BLOB_CONNECTION_STRING must be set.")
+
+            self.db_manager = DatabaseManager(connection_string=sql_connection_string)
+            self.blob_manager = BlobStorageManager(connection_string=blob_connection_string, container_name=blob_container_name)
+
         logger.info("E-Commerce system initialized successfully")
-    
+
+    # Wrapper methods for DatabaseManager
     def add_product(self, name: str, description: str, price: float, image_path: Optional[str] = None) -> int:
-        """Add a new product with optional image"""
-        try:
-            # Create product object
-            product = Product(name=name, description=description, price=price)
-            
-            # Add product to database first
-            product_id = self.db_manager.add_product(product)
-            
-            # Upload image if provided
-            if image_path and os.path.exists(image_path):
-                image_url = self.blob_manager.upload_image(product_id, image_path)
-                
-                # Update product with image URL
-                product.product_id = product_id
-                product.image_url = image_url
-                self.db_manager.update_product(product)
-            
-            return product_id
-            
-        except Exception as e:
-            logger.error(f"Error adding product: {str(e)}")
-            raise
-    
-    def get_product(self, product_id: int) -> Optional[Dict[str, Any]]:
-        """Get product information"""
-        try:
-            product = self.db_manager.get_product(product_id)
-            
-            if product:
-                return {
-                    'ProductId': product.product_id,
-                    'Name': product.name,
-                    'Description': product.description,
-                    'Price': product.price,
-                    'ImageUrl': product.image_url,
-                    'CreatedAt': product.created_at.isoformat() if product.created_at else None
-                }
-            
-            return None
-            
-        except Exception as e:
-            logger.error(f"Error getting product: {str(e)}")
-            raise
-    
-    def list_products(self, limit: int = 50) -> List[Dict[str, Any]]:
-        """List all products"""
-        try:
-            products = self.db_manager.list_products(limit)
-            
-            return [
-                {
-                    'ProductId': p.product_id,
-                    'Name': p.name,
-                    'Description': p.description,
-                    'Price': p.price,
-                    'ImageUrl': p.image_url,
-                    'CreatedAt': p.created_at.isoformat() if p.created_at else None
-                }
-                for p in products
-            ]
-            
-        except Exception as e:
-            logger.error(f"Error listing products: {str(e)}")
-            raise
+        if image_path and os.path.exists(image_path):
+            image_url = self.blob_manager.upload_image(0, image_path) # Product ID will be updated after DB insert
+        else:
+            image_url = ""
+        product = Product(name=name, description=description, price=price, image_url=image_url)
+        product_id = self.db_manager.add_product(product)
+        # Optionally update image_url with actual product_id if needed
+        return product_id
+
+    def get_product(self, product_id: int) -> Optional[Product]:
+        return self.db_manager.get_product(product_id)
+
+    def list_products(self, limit: int = 50) -> List[Product]:
+        return self.db_manager.list_products(limit)
+
+    def update_product(self, product: Product) -> bool:
+        return self.db_manager.update_product(product)
+
+    def delete_product(self, product_id: int) -> bool:
+        # First get the product to retrieve image_url
+        product = self.db_manager.get_product(product_id)
+        if product and self.db_manager.delete_product(product_id):
+            self.blob_manager.delete_image(product.image_url)
+            return True
+        return False
+
+    # Wrapper methods for BlobStorageManager
+    def upload_image(self, product_id: int, image_path: str, content_type: str = "image/jpeg") -> str:
+        return self.blob_manager.upload_image(product_id, image_path, content_type)
+
+    def delete_image(self, image_url: str) -> bool:
+        return self.blob_manager.delete_image(image_url)
+
+    def get_product_dict(self, product_id: int) -> Optional[Dict[str, Any]]:
+        product = self.get_product(product_id)
+        if product:
+            return {
+                'ProductId': product.product_id,
+                'Name': product.name,
+                'Description': product.description,
+                'Price': product.price,
+                'ImageUrl': product.image_url,
+                'CreatedAt': product.created_at.isoformat() if product.created_at else None
+            }
+        return None
+
+    def list_products_dict(self, limit: int = 50) -> List[Dict[str, Any]]:
+        products = self.list_products(limit)
+        return [
+            {
+                'ProductId': p.product_id,
+                'Name': p.name,
+                'Description': p.description,
+                'Price': p.price,
+                'ImageUrl': p.image_url,
+                'CreatedAt': p.created_at.isoformat() if p.created_at else None
+            }
+            for p in products
+        ]
 
 # Example usage and testing functions
 def main():
     """Main function for testing the system"""
     try:
         # Initialize the e-commerce system
-        ecommerce = ECommerceSystem()
+        ecommerce = ECommerceSystem(mock_mode=True)
+
         
         # Example: Add a product
         print("Adding a sample product...")

@@ -5,168 +5,219 @@
 [![Python](https://img.shields.io/badge/Python-3.9+-blue.svg)](https://python.org)
 [![Azure](https://img.shields.io/badge/Azure-Cloud-blue.svg)](https://azure.microsoft.com)
 [![Azure Blob Storage](https://img.shields.io/badge/Azure-Blob%20Storage-blue.svg)](https://azure.microsoft.com/services/storage/blobs/)
-[![Azure Key Vault](https://img.shields.io/badge/Azure-Key%20Vault-blue.svg)](https://azure.microsoft.com/services/key-vault/)
+
 [![SQL Server](https://img.shields.io/badge/SQL-Server-red.svg)](https://www.microsoft.com/sql-server)
-[![React](https://img.shields.io/badge/React-18+-61DAFB.svg)](https://reactjs.org)
+
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Stars](https://img.shields.io/github/stars/galafis/Armazenando-dados-de-um-E-Commerce-na-Cloud.svg)](https://github.com/galafis/Armazenando-dados-de-um-E-Commerce-na-Cloud/stargazers)
 
 [Ver Código no GitHub](https://github.com/galafis/Armazenando-dados-de-um-E-Commerce-na-Cloud) | [Visualizar no GitHub Pages](https://galafis.github.io/Armazenando-dados-de-um-E-Commerce-na-Cloud/)
 
-![E-Commerce Cloud Storage System](new-hero-image.png)
+
+
 
 
 ## 📁 Estrutura do Projeto
 
 ```
-📦 E-Commerce Cloud Storage System
-├── 📂 src/                 # Código fonte principal
-│   ├── 📂 api/             # Endpoints da API
-│   ├── 📂 models/          # Modelos de dados
-│   ├── 📂 services/        # Lógica de negócio
-│   └── 📂 utils/           # Utilitários
-├── 📂 tests/               # Testes unitários e integração
-├── 📂 docs/                # Documentação (API.md)
-├── 📂 frontend/            # Interface do usuário
-│   ├── 📂 components/      # Componentes React
-│   ├── 📂 assets/          # Imagens e estilos
-│   └── 📂 public/          # Arquivos públicos
-├── 📂 config/              # Configurações (.env.example)
-└── 📄 requirements.txt     # Dependências Python
+📦 Armazenando-dados-de-um-E-Commerce-na-Cloud
+├── 📂 ecommerce-dashboard/ # Frontend da aplicação (React)
+│   ├── 📂 public/          # Arquivos públicos
+│   ├── 📂 src/             # Código fonte do React
+│   └── 📄 package.json     # Dependências do frontend
+├── 📂 src/                 # Backend da aplicação (Python)
+│   └── 📄 app.py           # Lógica principal do backend
+├── 📄 .env.example         # Exemplo de variáveis de ambiente
+├── 📄 requirements.txt     # Dependências Python do backend
+├── 📄 README.md            # Este arquivo
+└── 📄 LICENSE              # Licença do projeto
 ```
 
 ## 🇧🇷 Sistema de Armazenamento em Nuvem para E-Commerce
 
 ### Visão Geral
 
-Este projeto apresenta um sistema de armazenamento em nuvem de nível profissional para aplicações de e-commerce, construído sobre a plataforma Microsoft Azure. A solução demonstra uma arquitetura escalável e segura para gerenciar dados de produtos, clientes e pedidos, utilizando serviços como Azure SQL Database, Azure Blob Storage e Azure Key Vault.
+Este projeto demonstra um sistema de backend para e-commerce, focado no armazenamento seguro e eficiente de dados de produtos utilizando Azure SQL Database e Azure Blob Storage. A solução é projetada para ser escalável e segura, servindo como base para aplicações de e-commerce robustas na nuvem.
 
-O sistema inclui um dashboard interativo em React para visualização de dados, gerenciamento de produtos, análise de performance e monitoramento da infraestrutura. É uma solução completa que serve como um excelente exemplo de como construir aplicações de e-commerce robustas e escaláveis na nuvem.
+
 
 ### Funcionalidades Principais
 
-- **Dashboard Interativo em React:** Uma interface de usuário moderna e responsiva, construída com React, que oferece uma visão completa do sistema. O dashboard inclui abas para visão geral, gerenciamento de produtos, analytics e monitoramento da infraestrutura.
+- **Armazenamento de Dados Estruturados:** Utiliza Azure SQL Database para armazenar informações de produtos, como nome, descrição, preço e URL da imagem.
 
-- **Gerenciamento de Produtos:** O dashboard permite a visualização e o gerenciamento completo do catálogo de produtos. Os produtos são exibidos em um layout de grade, com informações como preço, estoque, vendas e avaliação.
+- **Armazenamento de Dados Não Estruturados:** Integra Azure Blob Storage para o armazenamento eficiente de imagens de produtos, otimizando o acesso e a escalabilidade.
 
-- **Análise de Performance:** A aba de analytics oferece uma visão detalhada da performance do e-commerce, com gráficos de tendências de vendas, distribuição de categorias, taxa de conversão, abandono de carrinho e valor do tempo de vida do cliente (LTV).
+- **Gerenciamento de Produtos:** Permite adicionar, listar, recuperar, atualizar e excluir produtos do banco de dados, com suporte para upload de imagens associadas.
 
-- **Monitoramento de Infraestrutura Azure:** O sistema inclui uma seção dedicada ao monitoramento dos recursos da Azure, com informações sobre o status do Azure SQL Database, Azure Blob Storage e Azure Key Vault, além de métricas de uso de CPU, memória e armazenamento.
+- **Modo de Simulação (Mock Mode):** Inclui um modo de simulação para desenvolvimento e testes locais, permitindo que o backend funcione sem a necessidade de conexões reais com Azure SQL Database e Azure Blob Storage.
 
-- **Armazenamento de Dados Estruturados e Não Estruturados:** O Azure SQL Database é utilizado para armazenar dados estruturados, como informações de produtos, clientes e pedidos. O Azure Blob Storage é utilizado para armazenar dados não estruturados, como imagens de produtos.
-
-- **Gerenciamento Seguro de Credenciais:** O Azure Key Vault é integrado ao sistema para o gerenciamento seguro de chaves, segredos e certificados, garantindo que as credenciais de acesso ao banco de dados e outros serviços sejam armazenadas de forma segura.
-
-- **API RESTful (simulada):** Embora o foco principal seja o dashboard e a infraestrutura, a arquitetura é projetada para ser consumida por uma API RESTful, que serviria como a ponte entre o frontend e os serviços da Azure.
+- **Configuração via Variáveis de Ambiente:** As credenciais e configurações são gerenciadas através de variáveis de ambiente, facilitando a implantação e a segurança.
 
 ### Arquitetura do Sistema
 
-O diagrama a seguir ilustra a arquitetura de microsserviços do Sistema de Armazenamento em Nuvem para E-Commerce na Azure:
+O diagrama a seguir ilustra a arquitetura do sistema de backend do e-commerce:
 
-![Arquitetura de Microsserviços](microservices-architecture.png)
+![Arquitetura do Sistema](architecture.png)
 
-O diagrama abaixo detalha a infraestrutura de armazenamento e segurança:
 
-![Infraestrutura do Sistema](infrastructure.png)
+
 
 
 
 ### Como Executar o Projeto
 
-#### Backend (simulado)
+#### Backend (Python)
 
-O backend é simulado no código do dashboard React para fins de demonstração. Em uma aplicação real, seria uma API RESTful separada, construída com Flask ou outra tecnologia.
+1.  **Navegue até o diretório raiz do projeto:**
+    ```shell
+    cd Armazenando-dados-de-um-E-Commerce-na-Cloud
+    ```
+
+2.  **Crie e ative um ambiente virtual:**
+    ```shell
+    python3.11 -m venv venv_backend
+    source venv_backend/bin/activate
+    ```
+
+3.  **Instale as dependências:**
+    ```shell
+    pip install -r requirements.txt
+    ```
+
+4.  **Configure as variáveis de ambiente:**
+    Crie um arquivo `.env` no diretório `src/` com as seguintes variáveis (substitua pelos seus valores reais do Azure, ou deixe como `mock_...` para o modo de simulação):
+    ```
+    SQL_CONNECTION_STRING="Driver={ODBC Driver 18 for SQL Server};Server=tcp:<your_server>.database.windows.net,1433;Database=<your_database>;Uid=<your_username>;Pwd=<your_password>;Encrypt=yes;TrustServerCertificate=no;Connection Timeout=30;"
+    BLOB_CONNECTION_STRING="DefaultEndpointsProtocol=https;AccountName=<your_account_name>;AccountKey=<your_account_key>;EndpointSuffix=core.windows.net"
+    ```
+    Para executar em modo de simulação, você pode omitir a criação do arquivo `.env` ou deixar os valores como `mock_...`.
+
+5.  **Execute a aplicação:**
+    ```shell
+    python src/app.py
+    ```
+    O sistema será inicializado e você verá logs no console. Em modo de simulação, ele executará operações de exemplo.
+
 
 #### Frontend (Dashboard React)
 
-1. **Navegue até o diretório do dashboard:**
-   ```shell
-   cd Armazenando-dados-de-um-E-Commerce-na-Cloud/ecommerce-dashboard
-   ```
+O frontend está localizado no diretório `ecommerce-dashboard/`. Para executá-lo:
 
-2. **Instale as dependências:**
-   ```shell
-   pnpm install
-   ```
+1.  **Navegue até o diretório do frontend:**
+    ```shell
+    cd ecommerce-dashboard
+    ```
 
-3. **Execute a aplicação React:**
-   ```shell
-   pnpm run dev
-   ```
+2.  **Instale as dependências:**
+    ```shell
+    pnpm install
+    ```
 
-4. **Acesse o dashboard:**
-   Abra seu navegador e acesse o endereço fornecido pelo Vite (geralmente `http://localhost:5173`).
+3.  **Execute a aplicação React:**
+    ```shell
+    pnpm run dev
+    ```
+
+4.  **Acesse o dashboard:**
+    Abra seu navegador e acesse o endereço fornecido pelo Vite (geralmente `http://localhost:5173`).
+
+
 
 ## 🇺🇸 E-Commerce Cloud Storage System
 
 ### Overview
 
-This project presents a professional-level cloud storage system for e-commerce applications, built on the Microsoft Azure platform. The solution demonstrates a scalable and secure architecture for managing product, customer, and order data, utilizing services such as Azure SQL Database, Azure Blob Storage, and Azure Key Vault.
+This project demonstrates a backend system for e-commerce, focused on secure and efficient product data storage using Azure SQL Database and Azure Blob Storage. The solution is designed to be scalable and secure, serving as a foundation for robust cloud e-commerce applications.
 
-The system includes an interactive React dashboard for data visualization, product management, performance analysis, and infrastructure monitoring. It's a complete solution that serves as an excellent example of how to build robust and scalable e-commerce applications in the cloud.
 
 ### Key Features
 
-- **Interactive React Dashboard:** A modern and responsive user interface built with React that provides a comprehensive view of the system. The dashboard includes tabs for overview, product management, analytics, and infrastructure monitoring.
+- **Structured Data Storage:** Uses Azure SQL Database to store product information such as name, description, price, and image URL.
 
-- **Product Management:** The dashboard allows for complete visualization and management of the product catalog. Products are displayed in a grid layout with information such as price, stock, sales, and rating.
+- **Unstructured Data Storage:** Integrates Azure Blob Storage for efficient storage of product images, optimizing access and scalability.
 
-- **Performance Analysis:** The analytics tab offers a detailed view of e-commerce performance with sales trend charts, category distribution, conversion rate, cart abandonment, and customer lifetime value (LTV).
+- **Product Management:** Allows adding, listing, retrieving, updating, and deleting products from the database, with support for associated image uploads.
 
-- **Azure Infrastructure Monitoring:** The system includes a dedicated section for monitoring Azure resources, with information about the status of Azure SQL Database, Azure Blob Storage, and Azure Key Vault, plus CPU, memory, and storage usage metrics.
+- **Mock Mode:** Includes a mock mode for local development and testing, allowing the backend to function without the need for real connections to Azure SQL Database and Azure Blob Storage.
 
-- **Structured and Unstructured Data Storage:** Azure SQL Database is used to store structured data such as product, customer, and order information. Azure Blob Storage is used to store unstructured data such as product images.
-
-- **Secure Credential Management:** Azure Key Vault is integrated into the system for secure management of keys, secrets, and certificates, ensuring that database access credentials and other services are stored securely.
-
-- **RESTful API (simulated):** While the main focus is the dashboard and infrastructure, the architecture is designed to be consumed by a RESTful API that would serve as the bridge between the frontend and Azure services.
-
-### System Architecture
-
-The following diagram illustrates the microservices architecture of the E-Commerce Cloud Storage System on Azure:
-
-![Microservices Architecture](microservices-architecture.png)
-
-The diagram below details the storage and security infrastructure:
-
-![System Infrastructure](infrastructure.png)
-
-
+- **Environment Variable Configuration:** Credentials and configurations are managed through environment variables, facilitating deployment and security.
 
 ### How to Run the Project
 
-#### Backend (simulated)
+#### Backend (Python)
 
-The backend is simulated in the React dashboard code for demonstration purposes. In a real application, it would be a separate RESTful API built with Flask or another technology.
+1.  **Navigate to the project root directory:**
+    ```shell
+    cd Armazenando-dados-de-um-E-Commerce-na-Cloud
+    ```
+
+2.  **Create and activate a virtual environment:**
+    ```shell
+    python3.11 -m venv venv_backend
+    source venv_backend/bin/activate
+    ```
+
+3.  **Install dependencies:**
+    ```shell
+    pip install -r requirements.txt
+    ```
+
+4.  **Configure environment variables:**
+    Create a `.env` file in the `src/` directory with the following variables (replace with your actual Azure values, or leave as `mock_...` for mock mode):
+    ```
+    SQL_CONNECTION_STRING="Driver={ODBC Driver 18 for SQL Server};Server=tcp:<your_server>.database.windows.net,1433;Database=<your_database>;Uid=<your_username>;Pwd=<your_password>;Encrypt=yes;TrustServerCertificate=no;Connection Timeout=30;"
+    BLOB_CONNECTION_STRING="DefaultEndpointsProtocol=https;AccountName=<your_account_name>;AccountKey=<your_account_key>;EndpointSuffix=core.windows.net"
+    ```
+    To run in mock mode, you can omit creating the `.env` file or leave the values as `mock_...`.
+
+5.  **Run the application:**
+    ```shell
+    python src/app.py
+    ```
+    The system will initialize, and you will see logs in the console. In mock mode, it will execute example operations.
+
 
 #### Frontend (React Dashboard)
 
-1. **Navigate to the dashboard directory:**
-   ```shell
-   cd Armazenando-dados-de-um-E-Commerce-na-Cloud/ecommerce-dashboard
-   ```
+The frontend is located in the `ecommerce-dashboard/` directory. To run it:
 
-2. **Install dependencies:**
-   ```shell
-   pnpm install
-   ```
+1.  **Navigate to the frontend directory:**
+    ```shell
+    cd ecommerce-dashboard
+    ```
 
-3. **Run the React application:**
-   ```shell
-   pnpm run dev
-   ```
+2.  **Install dependencies:**
+    ```shell
+    pnpm install
+    ```
 
-4. **Access the dashboard:**
-   Open your browser and go to the address provided by Vite (usually `http://localhost:5173`).
+3.  **Run the React application:**
+    ```shell
+    pnpm run dev
+    ```
+
+4.  **Access the dashboard:**
+    Open your browser and go to the address provided by Vite (usually `http://localhost:5173`).
+
+### System Architecture
+
+The following diagram illustrates the e-commerce backend system architecture:
+
+![System Architecture](architecture.png)
+
+
+
+
+
+
+
 
 ## 📊 Tecnologias Utilizadas
 
-- **Frontend:** React 18+, Vite, Tailwind CSS, Lucide React
-- **Backend (simulado):** Python, Flask
+- **Backend:** Python, Flask
 - **Cloud:** Microsoft Azure
 - **Database:** Azure SQL Database
 - **Storage:** Azure Blob Storage
-- **Security:** Azure Key Vault
 - **Monitoring:** Azure Monitor, Application Insights
 
 ## 🤝 Contribuindo

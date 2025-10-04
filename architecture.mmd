@@ -1,0 +1,14 @@
+graph TD
+    A[Frontend] --> B[Backend API]
+    B --> C[Azure SQL Database]
+    B --> D[Azure Blob Storage]
+    C --> E[Product Data]
+    D --> F[Product Images]
+    subgraph Azure Cloud
+        C
+        D
+    end
+    subgraph E-Commerce System
+        A
+        B
+    end
