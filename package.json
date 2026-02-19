@@ -1,0 +1,39 @@
+{
+  "name": "armazenando-dados-de-um-e-commerce-na-cloud",
+  "version": "1.0.0",
+  "description": "> DIObootcamp / Microsoft Azure Cloud Native",
+  "main": "index.js",
+  "scripts": {
+    "start": "npx serve ."
+  },
+  "license": "MIT",
+  "dependencies": {
+    "@": "*",
+    "@eslint": "*",
+    "@radix-ui": "*",
+    "@tailwindcss": "*",
+    "@vitejs": "*",
+    "class-variance-authority": "*",
+    "clsx": "*",
+    "cmdk": "*",
+    "embla-carousel-react": "*",
+    "eslint-plugin-react-hooks": "*",
+    "eslint-plugin-react-refresh": "*",
+    "globals": "*",
+    "input-otp": "*",
+    "lucide-react": "*",
+    "next-themes": "*",
+    "react": "*",
+    "react-day-picker": "*",
+    "react-dom": "*",
+    "react-hook-form": "*",
+    "react-resizable-panels": "*",
+    "recharts": "*",
+    "sonner": "*",
+    "tailwind-merge": "*",
+    "vaul": "*"
+  },
+  "devDependencies": {
+    "vite": "*"
+  }
+}
